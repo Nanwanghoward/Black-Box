@@ -1,0 +1,619 @@
+# python1
+black_box
+# Nan Wang's black_box game
+
+import random
+import copy
+board = []
+new_board = []
+whole_board = []
+time = "a"
+entry = ''
+sidescore = int(0)
+
+def store_board(): #get the value of board
+  global board
+  return board
+  
+
+def store_new_board(): #get the value of new_board
+  global new_board
+  return new_board
+
+def store_whole_board(): #get the value of whole_board
+  global whole_board
+  return whole_board
+
+def store_time(ch): #get the value of time
+  global time
+  time = ch
+  return ch
+
+def store_entry(nd): #get the value of entry
+  global entry
+  entry = nd
+
+def store_sidescore(): #get the value of sidescore
+  global sidescore
+  return sidescore
+  
+
+def create_whole_board(): #create a whole board
+  global board
+  global new_board
+  global whole_board
+  whole_board = [['1','2','3','4','5','6','7','8'],
+                 [' ',' ',' ',' ',' ',' ',' ',' '],
+                 ['1',' ',' ','|',board[0],'|',' ',' ','1'],
+                 ['2',' ',' ','|',board[1],'|',' ',' ','2'],
+                 ['3',' ',' ','|',board[2],'|',' ',' ','3'],
+                 ['4',' ',' ','|',board[3],'|',' ',' ','4'],
+                 ['5',' ',' ','|',board[4],'|',' ',' ','5'],
+                 ['6',' ',' ','|',board[5],'|',' ',' ','6'],
+                 ['7',' ',' ','|',board[6],'|',' ',' ','7'],
+                 ['8',' ',' ','|',board[7],'|',' ',' ','8'],
+                 [' ',' ',' ',' ',' ',' ',' ',' '],
+                 ['1','2','3','4','5','6','7','8']]
+                 
+def create_board(): #create a  board
+  global board
+  board =[['-', '-', '-', '-', '-','-', '-','-'],
+          ['-', '-', '-', '-', '-','-', '-','-'],
+          ['-', '-', '-', '-', '-','-', '-','-'],
+          ['-', '-', '-', '-', '-','-', '-','-'],
+          ['-', '-', '-', '-', '-','-', '-','-'],
+          ['-', '-', '-', '-', '-','-', '-','-'],
+          ['-', '-', '-', '-', '-','-', '-','-'],
+          ['-', '-', '-', '-', '-','-', '-','-']]
+  
+def create_new_board(): #create a new_board
+  global new_board
+  new_board =[['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-']]
+
+def new_game(location1, location2, location3, location4): #create a new game
+    global new_board
+    create_new_board()
+    for i in range(0,8):
+        if location1[0] == i:
+            for j in range(0,8):
+                if location1[1] == j:
+                    new_board[i][j] = '*'
+    for i in range(0,8):
+        if location2[0] == i:
+            for j in range(0,8):
+                if location2[1] == j:
+                    new_board[i][j] = '*'
+    for i in range(0,8):
+        if location3[0] == i:
+            for j in range(0,8):
+                if location3[1] == j:
+                    new_board[i][j] = '*'
+    for i in range(0,8):
+        if location4[0] == i:
+            for j in range(0,8):
+                if location4[1] == j:
+                    new_board[i][j] = '*'
+   
+def direction_L(position): # current direction is Left and move in
+        global board
+        global new_board
+        if new_board[position[0]][position[1]+1] == '*':
+            position = None
+            return position
+        elif position[0] == 0:
+          if new_board[position[0]+1][position[1]+1] == '*':
+            position[2] ='B'
+            return position
+          else:
+            position[1] = position[1]+1
+            return position
+        elif position[0]==7:
+          if new_board[position[0]-1][position[1]+1] == '*':
+            position[2] ='T'
+            return position
+          else:
+            position[1] = position[1]+1
+            return position
+        elif new_board[position[0]-1][position[1]+1] == '*':
+            position[2] = 'T'
+            return position 
+        elif new_board[position[0]+1][position[1]+1]=='*':
+            position[2] = 'B'
+            return position
+        else:
+            position[1]=position[1]+1
+            return position
+        
+def direction_R(position): # current direction is Right and move in
+        global board
+        global new_board
+        if new_board[position[0]][position[1]-1] == '*':
+            position = None
+            return position
+        elif position[0] == 0:
+          if new_board[position[0]+1][position[1]-1] == '*':
+            position[2] ='B'
+            return position
+          else:
+            position[1] = position[1]-1
+            return position
+        elif position[0]==7:
+          if new_board[position[0]-1][position[1]-1] == '*':
+            position[2] ='T'
+            return position
+          else:
+            position[1] = position[1]-1
+            return position
+        elif new_board[position[0]-1][position[1]-1] == '*':
+            position[2] = 'T'
+            return position 
+        elif new_board[position[0]+1][position[1]-1] =='*':
+            position[2] = 'B'
+            return position
+        else:
+            position[1]=position[1]-1
+            return position
+       
+def direction_T(position): # current direction is Top and move in
+        global board
+        global new_board
+        if new_board[position[0]+1][position[1]] == '*':
+            position = None
+            return position
+        elif position[1] == 0:
+          if new_board[position[0]+1][position[1]+1] == '*':
+            position[2] ='R'
+            return position
+          else:
+            position[0]=position[0]+1
+            return position
+        elif position[1]==7:
+          if new_board[position[0]+1][position[1]-1] == '*':
+            position[2] ='L'
+            return position
+          else:
+            position[0]=position[0]+1
+            return position
+        elif new_board[position[0]+1][position[1]-1] == '*':
+            position[2] = 'L'
+            return position
+        elif new_board[position[0]+1][position[1]+1] == '*':
+            position[2] = 'R'
+            return position
+        else:
+            position[0]=position[0]+1
+            return position
+
+def direction_B(position): # current direction is from Bottom and move in
+        global board
+        global new_board
+        if new_board[position[0]-1][position[1]] == '*':
+            position = None
+            return position
+        elif position[1] == 0:
+          if new_board[position[0]-1][position[1]+1] == '*':
+            position[2] ='R'
+            return position
+          else:
+            position[0] = position[0]-1
+            return position
+        elif position[1]==7:
+          if new_board[position[0]-1][position[1]-1] == '*':
+            position[2] ='L'
+            return position
+          else:
+            position[0] = position[0]-1
+            return position
+        elif new_board[position[0]-1][position[1]-1] == '*':
+            position[2] = 'L'
+            return position
+        elif new_board[position[0]-1][position[1]+1] == '*':
+            position[2] = 'R'
+            return position
+        else:
+            position[0] = position[0]-1
+            return position
+
+def shoot(entry): # shoot an array and return None or an exit point
+    global board
+    global new_board
+    entry = entry.upper().replace(" ", "")
+    entry = list(entry)
+    entry[0] = int(entry[0])
+    if entry[1] == 'L':
+        position = [(entry[0]-1),0,'L']
+        if new_board[position[0]][position[1]] == '*':
+            return None
+        elif position[0] == 0:
+          if new_board[position[0]+1][position[1]] == '*':
+            return str(entry[0])+'L'
+        elif position[0]==7:
+          if new_board[position[0]-1][position[1]] == '*':
+            return str(entry[0])+'L'
+        elif new_board[position[0]-1][position[1]] == '*'or new_board[position[0]+1][position[1]] == '*':
+            return str(entry[0])+'L'
+        else:
+            position = direction_L(position)
+    elif entry[1] == 'R':
+        position = [(entry[0]-1),7,'R']
+        if new_board[position[0]][position[1]] == '*':
+            return None
+        elif position[0] == 0:
+          if new_board[position[0]+1][position[1]] == '*':
+            return str(entry[0])+'R'
+        elif position[0]==7:
+          if new_board[position[0]-1][position[1]] == '*':
+            return str(entry[0])+'R'
+        elif new_board[position[0]-1][position[1]] == '*'or new_board[position[0]+1][position[1]] == '*':
+            return str(entry[0])+'R'
+        else:
+            position = direction_R(position)
+    elif entry[1] == 'T':
+        position = [0,(entry[0]-1),'T']
+        if new_board[position[0]][position[1]] == '*':
+            return None
+        elif position[1] == 0:
+          if new_board[position[0]][position[1]+1] == '*':
+            return str(entry[0])+'T'
+        elif position[1]==7:
+          if new_board[position[0]][position[1]-1] == '*':
+            return str(entry[0])+'T'
+        elif new_board[position[0]][position[1]-1] == '*'or new_board[position[0]][position[1]+1] == '*':
+            return str(entry[0])+'T'
+        else:
+            position = direction_T(position)
+    else:
+        position = [7,(entry[0]-1),'B']
+        if new_board[position[0]][position[1]] == '*':
+            return None
+        elif position[1] == 0:
+          if new_board[position[0]][position[1]+1] == '*':
+            return str(entry[0])+'B'
+        elif position[1]==7:
+          if new_board[position[0]][position[1]-1] == '*':
+            return str(entry[0])+'B'
+        elif new_board[position[0]][position[1]+1] == '*'or new_board[position[0]][position[1]-1] == '*':
+            return str(entry[0])+'B'
+        else:
+            position = direction_B(position)
+    if position == None:
+        return None
+    else :
+        exit_point = ''
+        while exit_point == '':
+         if position == None:
+             return None
+         elif position[2] == 'L':
+            if position[1] == 7:
+                exit_point = str(position[0]+1)+'R'
+            else:
+                position = direction_L(position)
+         elif position[2] == 'R':
+            if position[1] == 0:
+                exit_point = str(position[0]+1)+'L'
+            else:
+                position = direction_R(position)
+         elif position[2] == 'T':
+            if position[0] == 7:
+                exit_point = str(position[1]+1)+'B'
+            else:
+                position = direction_T(position)
+         else:
+            if position[0] == 0:
+                exit_point = str(position[1]+1)+'T'
+            else:
+                position = direction_B(position)
+        return exit_point
+   
+def current_whole_board(entry): #current whole board after shooting the array
+  global board
+  global whole_board
+  global time
+  if entry[1] == 'T':
+    if shoot(entry) == None :
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[1][entry[0]-1] = 'H'
+    elif shoot(entry) == entry :
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[1][entry[0]-1] = 'R'
+    else:
+        list1 = shoot(entry)
+        list1 = list(list1)
+        list1[0] = int(list1[0])
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[1][entry[0]-1] = time
+        if list1[1] == 'L':
+          whole_board[list1[0]+1][2] = time
+        elif list1[1] == 'R':
+          whole_board[list1[0]+1][-3] = time
+        elif list1[1] == 'T':
+          whole_board[1][list1[0]-1] = time
+        else:
+          whole_board[-2][list1[0]-1] = time
+  elif entry[1] == 'L':
+    if shoot(entry) == None :
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[entry[0]+1][2] = 'H'
+    elif shoot(entry) == entry :
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[entry[0]+1][2] = 'R'
+    else:
+        list2 = shoot(entry)
+        list2 = list(list2)
+        list2[0] = int(list2[0])
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[entry[0]+1][2] = time
+        if list2[1] == 'R':
+           whole_board[list2[0]+1][-3] = time
+        elif list2[1] == 'T':
+           whole_board[1][list2[0]-1] = time
+        elif list2[1] == 'L':
+          whole_board[list2[0]+1][2] = time
+        else:
+           whole_board[-2][list2[0]-1] = time
+  elif entry[1] == 'R':
+    if shoot(entry) == None :
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[entry[0]+1][-3] = 'H'
+    elif shoot(entry) == entry :
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[entry[0]+1][-3] = 'R'
+    else:
+        list3 = shoot(entry)
+        list3 = list(list3)
+        list3[0] = int(list3[0])
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[entry[0]+1][-3] = time
+        if list3[1] == 'L':
+          whole_board[list3[0]+1][2] = time
+        elif list3[1] == 'T':
+          whole_board[1][list3[0]-1] = time
+        elif list3[1] == 'R':
+          whole_board[list3[0]+1][-3] = time
+        else:
+          whole_board[-2][list3[0]-1] = time
+  else:
+    entry[1] == 'B'
+    if shoot(entry) == None :
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[-2][entry[0]-1] = 'H'
+    elif shoot(entry) == entry :
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[-2][entry[0]-1] = 'R'
+    else:
+        list4 = shoot(entry)
+        list4 = list(list4)
+        list4[0] = int(list4[0])
+        entry = list(entry)
+        entry[0] = int(entry[0])
+        whole_board[-2][entry[0]-1] = time
+        if list4[1] == 'L':
+           whole_board[list4[0]+1][2] = time
+        elif list4[1] == 'R':
+           whole_board[list4[0]+1][-3] = time
+        elif list4[1] == 'B':
+           whole_board[-2][list4[0]-1] = time
+        else:
+           whole_board[1][list4[0]-1] = time
+  
+def print_actual_board(): #print the actual whole board after the user finishes the game
+    global new_board
+    print("     1  2  3  4  5  6  7  8     ")
+    print()
+    print("    ------------------------    \n")
+    ch = "1"
+    for i in range(0,8):
+      print(ch, " |",end='')
+      for j in range(0,8):
+        print(" "+new_board[i][j]+" ",end='')
+      print("|"," ",ch,end="")
+      if i == 8:
+        break
+      print('\n')
+      ch = str(int(ch)+1)
+    print("    ------------------------    \n")
+    print("     1  2  3  4  5  6  7  8     ")
+    print()
+
+def print_board(): #print the current whole board after the user shoots an array or mark(unmark) a point
+    global board
+    global whole_board
+    print("     ",end='')
+    for i in range(0,8):
+      print(whole_board[0][i]," ",end='')
+    print("   ")
+    print("     ",end='')
+    for i in range(0,8):
+      print(whole_board[1][i]," ",end='')
+    print("   ")
+    print("    ------------------------    \n")
+    for i in range(0,9):
+      if whole_board[2][i]== board[0]:
+        for j in range(0,8):
+          print(" "+board[0][j]+" ",end="")
+      else:
+        print(whole_board[2][i],end="")
+    print('\n')
+    for i in range(0,9):
+      if whole_board[3][i] == board[1]:
+        for j in range(0,8):
+          print(" "+board[1][j]+" ",end="")
+      else:
+        print(whole_board[3][i],end="")
+    print('\n')
+    for i in range(0,9):
+      if whole_board[4][i] == board[2]:
+        for j in range(0,8):
+          print(" "+board[2][j]+" ",end="")
+      else:
+        print(whole_board[4][i],end="")
+    print('\n')
+    for i in range(0,9):
+      if whole_board[5][i] == board[3]:
+        for j in range(0,8):
+          print(" "+board[3][j]+" ",end="")
+      else:
+        print(whole_board[5][i],end="")
+    print('\n')
+    for i in range(0,9):
+      if whole_board[6][i] == board[4]:
+        for j in range(0,8):
+          print(" "+board[4][j]+" ",end="")
+      else:
+        print(whole_board[6][i],end="")
+    print('\n')
+    for i in range(0,9):
+      if whole_board[7][i] == board[5]:
+        for j in range(0,8):
+          print(" "+board[5][j]+" ",end="")
+      else:
+        print(whole_board[7][i],end="")
+    print('\n')
+    for i in range(0,9):
+      if whole_board[8][i] == board[6]:
+        for j in range(0,8):
+          print(" "+board[6][j]+" ",end="")
+      else:
+        print(whole_board[8][i],end="")
+    print('\n')
+    for i in range(0,9):
+      if whole_board[9][i] == board[7]:
+        for j in range(0,8):
+          print(" "+board[7][j]+" ",end="")
+      else:
+        print(whole_board[9][i],end="")
+    print('\n')
+    print("    ------------------------    ")
+    print("     ",end='')
+    for i in range(0,8):
+      print(whole_board[10][i]," ",end='')
+    print("   ")
+    print("     ",end='')
+    for i in range(0,8):
+      print(whole_board[11][i]," ",end='')
+    print("   ")
+    print()
+    
+def toggle(row, column): #mark or unmark a point
+    global board
+    global new_board
+    board = store_board()
+    for i in range(0,8):
+      if i == row:
+        for j in range(0,8):
+          if j == column:
+            if board[i][j] == '*':
+              board[i][j] = '-'
+            else:
+              board[i][j] ='*'
+    
+def score_for_side_mark(): #calculate the scores for side marks
+  global sidescore
+  global entry
+  global board
+  global new_board
+  global whole_board
+  entry = entry.upper().replace(" ", "")
+  if shoot(entry) == None or shoot(entry) == entry:
+    sidescore = sidescore + 1
+  else:
+    sidescore = sidescore + 2
+
+def score(): #calculate the score after finishing the game
+  global entry
+  global board
+  global new_board
+  global whole_board
+  global sidescore
+  current_score = store_sidescore()
+  for i in range(0,8):
+    for j in range(0,8):
+      if new_board[i][j] == '*' and board[i][j] != '*':
+          current_score = current_score + 10
+      if board[i][j] == '*' and new_board[i][j] != '*':
+          current_score = current_score + 10
+  return current_score
+   
+
+def main():
+    global board
+    global new_board
+    global whole_board
+    global time
+    global entry
+    global sidescore
+    sidescore = int(0)
+    create_board()
+    create_whole_board()
+    time = 'a'
+    print('Welcome to Black Box game!\n')
+    print_board()
+    location = []
+    while len(location) != 4:
+        element = (random.randint(0, 7), random.randint(0, 7))
+        if element not in location:
+            location.append(element)
+    location1 = location[0]
+    location2 = location[1]
+    location3 = location[2]
+    location4 = location[3]
+    new_game(location1, location2, location3, location4)
+    directions = {'L':'left', 'R':'right', 'T':'top', 'B':'bottom'}
+    while True:
+        entry = input("Your entry (number, direction)?\n")
+        entry = entry.upper().replace(" ", "")
+        current_whole_board(entry)
+        print_board()
+        score_for_side_mark()
+        command = input("would you like to mark(M) or unmark(U),enter Y(yes) or N(no)?\n")
+        if command in ['N','n']:
+          pass
+        else:
+          if command in ['y' , 'Y']:
+           point = input("your mark or unmark point(row, column)?\n")
+           point = list(point.replace(" ", ""))
+           location = (int(point[0])-1,int(point[1])-1)
+           toggle(location[0],location[1])
+           print_board()
+          else:
+            print('invalid input')
+        finish = input("would you want to finish the game,enter Y(yes) or N(no)?\n")
+        if finish in ['Y','y']:
+          current_score = score()
+          print("You score is:" ,end='')
+          print(current_score)
+          print("\nThe actual board is:\n")
+          print_actual_board()
+          break
+        else:
+          pass         
+        if shoot(entry) == None or shoot(entry) == entry:
+          pass
+        else:
+          time = chr(ord(time)+1)
+    game = input("Do you want to play again,enter Y(yes) or N(no)?\n")
+    if game in ['Y','y']:
+      main()
+    else:
+      pass
+   
+if __name__ == "__main__":
+  main()
