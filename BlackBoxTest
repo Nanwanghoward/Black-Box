@@ -1,0 +1,86 @@
+# python1
+black_box
+import unittest
+from black_box import*
+
+class blackboxTest(unittest.TestCase):
+
+    board = []
+    new_board 
+    whole_board 
+    time 
+    entry 
+    sidescore
+
+    def test_new_game(self):
+       global new_board
+       new_game((1,1),(2,6),(7,7),(5,2))
+       self.assertEqual([['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '*', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '*','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '*', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','*']],store_new_board())
+       new_game((2,1),(2,6),(5,3),(7,6))
+       self.assertEqual([['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '*', '-', '-', '-','-', '*','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '*', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '-','-'],
+              ['-', '-', '-', '-', '-','-', '*','-']],store_new_board())
+
+
+    def test_shoot(self):
+        global new_board
+        self.assertEqual(None,shoot('6r'))
+        self.assertEqual('5T',shoot('5R'))
+        self.assertEqual('1R',shoot('1L'))
+        self.assertEqual('5B',shoot('5l'))
+        self.assertEqual('4R',shoot('7R'))
+        self.assertEqual('6T',shoot('3T'))
+
+    def test_toggle(self):
+        global board
+        create_board()
+        toggle(2,1)
+        self.assertEqual('*',store_board()[2][1])
+        toggle(5,6)
+        self.assertEqual('*',store_board()[5][6])
+        toggle(4,0)
+        self.assertEqual('*',store_board()[4][0])
+        toggle(2,1)
+        self.assertEqual('-',store_board()[2][1])
+        toggle(4,0)
+        self.assertEqual('-',store_board()[4][0])
+        toggle(5,6)
+        self.assertEqual('-',store_board()[5][6])
+      
+
+    def test_score(self):
+        new_game((2,1),(2,6),(5,3),(7,6))
+        store_entry('6r')
+        score_for_side_mark()
+        create_board()
+        toggle(2,1)
+        self.assertEqual(score(),31)
+        store_entry('5R')
+        score_for_side_mark()
+        toggle(1,1)
+        self.assertEqual(score(),43)
+        store_entry('3t')
+        score_for_side_mark()
+        toggle(2,7)
+        self.assertEqual(score(),55)
+        store_entry('1l')
+        score_for_side_mark()
+        toggle(5,3)
+        toggle(7,6)
+        self.assertEqual(score(),37)
+
+    
+
+unittest.main()
